@@ -1,9 +1,15 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
+
+# Get the project root based on this script's location
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "Data"
 
 # Load the dataset
-data_train = pd.read_csv('C:\\University\\Spring 2026\\Artificial Intelligence\\Project\\train.csv')
-data_test = pd.read_csv('C:\\University\\Spring 2026\\Artificial Intelligence\\Project\\test.csv')
+data_train = pd.read_csv(DATA_DIR / "train.csv")
+data_test = pd.read_csv(DATA_DIR / "test.csv")
+
 # Display the first few rows of the dataset
 print("Training Data:")
 print(data_train.head())
