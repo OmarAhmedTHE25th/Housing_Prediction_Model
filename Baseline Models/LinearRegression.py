@@ -1,6 +1,8 @@
 from pathlib import Path
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error
 #SCORE = 0.391
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "Data"
@@ -10,8 +12,21 @@ x_test  = pd.read_csv(DATA_DIR / "X_test_preprocessed.csv", sep=",")
 y_train = pd.read_csv(DATA_DIR / "y_train.csv", sep=";")
 if isinstance(y_train, pd.DataFrame) and y_train.shape[1] == 1:
     y_train = y_train.iloc[:, 0]
+
+X_train_part, X_val, y_train_part, y_val = train_test_split(
+    x_train,
+    y_train,
+    test_size=0.2,
+    random_state=42
+)
+
 model = LinearRegression()
-model.fit(x_train, y_train,)
+model.fit(X_train_part, y_train_part)
+
+val_predictions = model.predict(X_val)
+print("Local validation MAE:", mean_absolute_error(y_val, val_predictions))
+
+model.fit(x_train, y_train)
 
 predictions = model.predict(x_test)
 

@@ -174,23 +174,23 @@ def preprocess(df, is_train=True):
 
     df["MRP_Bin"] = pd.cut(df["Item_MRP"], bins=4, labels=["Low", "Medium", "High", "Premium"])
 
-    
+
     fat_map = {"low fat": "Low Fat", "LF": "Low Fat", "reg": "Regular"}
     df["Item_Fat_Content"] = df["Item_Fat_Content"].replace(fat_map)
     print("  ✔ Item_Fat_Content standardised →", sorted(df["Item_Fat_Content"].unique()))
 
-   
+
     weight_median = df["Item_Weight"].median()
     df["Item_Weight"].fillna(weight_median, inplace=True)
     print(f"  ✔ Item_Weight: filled {df['Item_Weight'].isnull().sum()} missing → median = {weight_median:.3f}")
 
-   
+
     df["Outlet_Size"] = df.groupby("Outlet_Type")["Outlet_Size"].transform(
         lambda x: x.fillna(x.mode()[0] if not x.mode().empty else "Medium")
     )
     print("  ✔ Outlet_Size: filled missing → mode per Outlet_Type")
 
-   
+
     zero_vis = (df["Item_Visibility"] == 0).sum()
     vis_mean = df[df["Item_Visibility"] > 0]["Item_Visibility"].mean()
     df["Item_Visibility"] = df["Item_Visibility"].replace(0, vis_mean)
