@@ -21,8 +21,34 @@ X_train_part, X_val, y_train_part, y_val = train_test_split(
     test_size=0.2,
     random_state=42
 )
+from sklearn.model_selection import RandomizedSearchCV
+from xgboost import XGBRegressor
 
-model = XGBRegressor(n_estimators=300,learning_rate= 0.05,max_depth=3,random_state=42)
+param_dist = {
+    "n_estimators": [600, 800, 1000],
+    "learning_rate": [0.01, 0.02, 0.05],
+    "max_depth": [3, 4, 5],
+    "min_child_weight": [1, 3, 5],
+    "subsample": [0.7, 0.8, 0.9],
+    "colsample_bytree": [0.7, 0.8, 0.9],
+    "gamma": [0, 0.1, 0.2],
+    "reg_alpha": [0, 0.1, 0.5],
+    "reg_lambda": [1, 1.5, 2]
+}
+
+search = RandomizedSearchCV(
+    XGBRegressor(random_state=42),
+    param_distributions=param_dist,
+    n_iter=20,
+    scoring="neg_mean_absolute_error",
+    cv=3,
+    n_jobs=-1,
+    random_state=42
+)
+
+search.fit(x_train, y_train)
+
+model = XGBRegressor(**search.best_params_, random_state=42)
 model.fit(X_train_part, y_train_part)
 
 val_predictions = model.predict(X_val)

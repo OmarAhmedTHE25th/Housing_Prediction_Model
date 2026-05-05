@@ -20,7 +20,7 @@ X_train_part, X_val, y_train_part, y_val = train_test_split(
     random_state=42
 )
 
-model = KNeighborsRegressor(n_neighbors=20)
+model = KNeighborsRegressor(n_neighbors=10)
 model.fit(X_train_part, y_train_part)
 
 val_predictions = model.predict(X_val)
